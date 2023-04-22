@@ -21,7 +21,7 @@ def get_apps_list() -> Dict[str, List[Optional[int]]]:
     """Get request for getting, if available, fb app`s list
 
     Returns:
-        Dict[str, List[str]]: _description_
+        Dict[str, List[str]]: list with ids
     """
     try:
         res = parser.get_all_apps()
@@ -34,14 +34,14 @@ def get_apps_list() -> Dict[str, List[Optional[int]]]:
 
 @app.post("/add/{app_id}")
 def add_adv_id(app_id: Optional[int], data: Dict[str, List[Optional[int]]]) -> JSONResponse:
-    """_summary_
+    """get being added your adv ids
 
     Args:
-        app_id (Optional[int]): _description_
-        data (Dict[str, List[Optional[int]]]): _description_
+        app_id (Optional[int]): the set of numbers means unique id of fb application
+        data (Dict[str, List[Optional[int]]]): data with adv ids to add
 
     Returns:
-        _type_: _description_
+        JSONResponse: status_code and message
     """
     try:
         res = parser.add_advapp_to_app(app_id=app_id, data=data)
@@ -80,7 +80,7 @@ def get_apps_id_list(app_id: Optional[int]) -> Dict[str, List[Optional[int]]]:
     """Get request for getting, if available, app`s advertising ids list
 
     Returns:
-        Dict[str, List[str]]: _description_
+        Dict[str, List[str]]: dict with available adv apps ids
     """
     try:
         res = parser.get_adv_apps(app_id=app_id)
@@ -91,6 +91,9 @@ def get_apps_id_list(app_id: Optional[int]) -> Dict[str, List[Optional[int]]]:
     return res.to_response()  # type: ignore
 
 
+#ToDo: get finished remove request(there is an issue with saving data in browser!)
 @app.post("/remove/{app_id}")
+    """get being removed your adv ids
+    """
 def remove_adv_id(app_id: Optional[int], data: Dict[str, List[Optional[int]]]) -> JSONResponse:
     parser.remove_advapp_from_apps(app_id=app_id, data=data)
