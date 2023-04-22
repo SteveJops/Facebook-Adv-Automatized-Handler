@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  selenoid:
+    container_name: seleno_id
+    image: "aerokube/selenoid:1.10.7"
+    restart: always
+    network_mode: bridge
+    ports:
+      - "4444:4444"
+    volumes:
+      - ".:/etc/selenoid/" # assumed current dir contains browser.json
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./tmp/wd:/opt/selenoid/logs"  # logs for selenoid session
+      - "./tmp/wd:/logs"
+    command: ["-max-timeout", "876000h", "-log-output-dir", "/opt/selenoid/logs/"]
+
+  selenoid-ui:
+    depends_on:
+      - selenoid
+    image: "aerokube/selenoid-ui"
+    network_mode: bridge
+    ports:
+      - "8080:8080"
+    command: ["--selenoid-uri", "http://192.168.1.113:4444"]
+
+
+  main:
+    build:
+      context: "."
+      dockerfile: Dockerfile
+    container_name: "fb_api"
+    restart: no
+    environment:
+      PORT: 8000
+    ports:
+      - "8008:8000"
+    command: ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port",  "8000"]
